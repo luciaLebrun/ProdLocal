@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% form_theme feedbackForm 'bootstrap_4_layout.html.twig' %}
+
+{% block title %}Prod'Local{% endblock %}
+
+{% block body %}
+    <p class="text-secondary"><a href="/" class="text-secondary">Accueil</a> &gt; <a href="/shop/{{ shop.id }}" class="text-secondary">{{ shop.name }}</a> &gt; <strong>Avis</strong></p>
+    <div class="row">
+        <div class="col-md">
+            <a href="/shop/{{ shop.id }}/" class="text-decoration-none mb-0"><h2 class="text-primary">{{ shop.name }}</h2></a>
+            <p>{{ shop.address }}</p>
+            <div class="row">
+                {% if listFeedbacks is defined or listFeedbacks is not empty %}
+                        {% for feedback in listFeedbacks %}
+                            <div class="card mb-3 w-100">
+                                <div class="card-header text-white text-center bg-primary">
+                                    <h5 class="mb-1 text-center">{{ feedback.author }}</h5>
+                                    <p class="my-0 text-center">
+                                        {% set star = 1 %}
+                                        {% for star in 1..5 %}
+                                            {% if star <= feedback.rate %}
+                                                ★
+                                                {% set star = star + 1 %}
+                                            {% else %}
+                                                ☆
+                                                {% set star = star + 1 %}
+                                            {% endif%}
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                                <div class="card-body bg-light">
+                                    <p class="text-center">"{{ feedback.text }}"</p>
+                                    <p class="small text-primary text-right my-0">posté le {{ feedback.date | date('d/m/Y') }} à {{ feedback.date | date('H:i') }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                {% else %}
+                    <p class="text-center">Oops, personne n'a encore donné d'avis...</p>
+                {% endif %}
+            </div> <!--class row-->
+            {% if app.user %}
+                {{ form_start(feedbackForm) }}
+                {{ form_row(feedbackForm.rate, {'label': "Nombre d'étoiles sur 5",'attr':  {'placeholder': 'étoiles/5'}}) }}
+                {{ form_row(feedbackForm.text, {'label': 'Texte avis','attr':  {'placeholder': 'Ecrivez votre avis..'}}) }}
+                <button type="submit" class="btn btn-success">Poster l'avis</button>
+                {{ form_end(feedbackForm) }}
+            {% else %}
+                <h4>Vous devez être connecté pour poster un avis</h4>
+                <a type="submit" class="btn btn-primary" href="{{ path('security_login') }}">Connexion</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prod'Local{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-4">
+            <h2 class="text-primary">Qui sommes-nous?</h2>
+            <h4 class="text-secondary">Le rendez vous de l’alimentaire avec le e-commerce</h4>
+            <p class="text-justify">En 2019, l’e-commerce alimentaire représentait seulement 6,6% des achats du quotidien réalisés en ligne (Les Echos, 23/04/2019). Si ce chiffre progresse, il tarde à rattraper les performances des autres secteurs tels que les produits culturels (48%) et le tourisme (44%). Malgré les efforts d’innovation et d’originalité que les enseignes mettent en œuvre pour séduire les acheteurs, l’e-commerce semble avoir encore du mal à pénétrer le marché de l’alimentaire. Cela est encore plus vrai pour les produits alimentaires locaux. Si de nombreuses modalités de vente en ligne voient régulièrement le jour, associées ou non à un magasin physique (drive fermiers, casiers de retraits, box, abonnements, livraisons, etc…), les lieux d’achat les plus fréquentés par les consommateurs français restent dans une très large mesure les circuits traditionnels, et plus particulièrement les marchés. La vente en ligne n’offre en effet pas la possibilité de toucher ou de sentir le produit (Bleier, Harmeling et Palmatier, 2019; Santos et Gonçalves, 2019). Éléments qui restent essentiels pour le choix des produits alimentaires locaux dont les qualités sensorielles sont fréquemment mentionnées comme critère d’achat.</p>
+            <br/>
+            <h4 class="text-secondary">Des produits locaux qui ont le vent en poupe</h4>
+            <p class="text-justify">Dans le même temps, d’après l’étude menée en 2017 par l’observatoire MesCoursespourlaPlanete, 86 % des Français pensent que consommer local peut être une réponse aux enjeux sociaux actuels (LSA, 2017). Le Baromètre Dyal CONNECT mené en juillet 2019 démontre par ailleurs que 94% des consommateurs sont acheteurs de produits locaux, et 43% en achètent au moins une fois par semaine.<br> Les acteurs de la grande distribution et les coopératives étoffent quant à eux leur offre. Ils valorisent les produits locaux via leur propre marque au sein des super et hypermarchés (Les alliances locales chez Leclerc, Les produits D’ici chez Casino, etc..). La coopérative de commerçants E.Leclerc lance en novembre 2017 un concept store de produits locaux à Angoulême, avec la perspective de le diffuser au niveau national. Des enseignes spécialisées voient le jour (O’tera du Sart, Frais d’ici). À l’échelle européenne, la période 2014-2020 est la première qui voit la Politique Agricole Commune (PAC) se concentrer sur la réduction des chaînes d’approvisionnement. Les producteurs peuvent également bénéficier depuis plusieurs années maintenant du soutien du Fonds Européen Agricole pour le Développement Rural (Feader) pour mettre en place des programmes de développement des circuits courts.<br> Le territoire de la Nouvelle-Aquitaine est lui aussi très largement concerné par ce mouvement. En effet la filière alimentaire est la première filière en termes économiques de la région. Des projets de plus en plus nombreux associant agriculture-alimentation-proximité voient le jour depuis quelques années, tantôt portés par des agriculteurs, tantôt portés par des consommateurs, tantôt encore portés par des collectivités locales ou des territoires de projets (PNR, Pays…). Issue des États Généraux de l’alimentation, une plateforme de mise en relation des producteurs et des consommateurs en recherche de produits locaux a d’ailleurs vu le jour en mars 2020.</p>
+            <br/>
+            <h4 class="text-secondary">L’arrivée du numérique : une opportunité pour les producteurs locaux de petite taille</h4>
+            <p class="text-justify">Dans ces projets il convient de remarquer que la question de la place du numérique est encore aujourd’hui peu présente. Il existe pourtant des enjeux importants autour de ces questions, tant du point de vue des bouleversements des modes de distribution induits par l’arrivée du numérique que de l’opportunité que cela ouvre pour les producteurs locaux.<br>Les producteurs semblent en effet avoir une carte à jouer dans le développement de la distribution alimentaire connectée. C’est ce que montrait déjà en 2015 un sondage BVA/Alimavenir pour Les entretiens de Rungis (2015), qui indiquait que parmi les modalités d’e-commerce dans l’alimentaire, l’achat direct sur les sites de producteurs est celui le plus plébiscité par les Français (68 %), en permettant de rendre l’offre locale plus visible, plus accessible. 25% des non acheteurs déclaraient vouloir expérimenter ce type de circuit alors que leur taux de pénétration est de 14% (Obsoco, 2017). C’était une perspective également défendue par les professionnels de la distribution qui étaient près des trois-quarts à penser que les modalités de distribution amenées à se développer ces 10 prochaines années seraient les sites de producteurs (Laisney, 2015).</p>
+        </div><!--class col-md-4-->
+        <div class="col-8">
+            <h2 class="text-primary">Les points de vente</h2>
+            <br/>
+            <div id="map" style="height: 500px; position: relative"></div>
+            <br/>
+            {% if listShops is defined or listShops is not empty %}
+                {% for shop in listShops %}
+                    <div class="producteur list-group"
+                        data-id="{{ shop.id }}"
+                        data-name="{{ shop.name }}"
+                        data-lat="{{ shop.latitude }}"
+                        data-long="{{ shop.longitude }}"
+                        data-address="{{ shop.address }}">
+                        <div class="list-group-item list-group-item-action flex-column align-items-start active">
+                            <div class="d-flex w-100 justify-content-between">
+                                <a href="/shop/{{ shop.id }}/" class="text-white text-decoration-none"><h5 class="mb-1">{{ shop.name }}</h5></a>
+                                {% if listCategories is defined or listCategories is not empty %}
+                                    {% for category in listCategories %}
+                                        {% if shop.id == category.shop %}
+                                            <img src="{{ asset('images/'~category.image) }}" class="h-100 w-auto">
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                {% endfor %}
+            {% else %}
+                <p>Oups, il n'y a pas de points de vente. Revenez une autre fois ! ;)</p>
+            {% endif %}
+        </div>
+    </div> <!--class row-->
+{% endblock %}
+
+    {% block scripts %}
+        <script>
+            let map = L.map('map').setView([46.158051, -1.153400], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            let producteurs = document.querySelectorAll('.producteur');
+            producteurs.forEach(function(producteur){
+                L.marker([producteur.dataset.lat, producteur.dataset.long]).addTo(map)
+                    .bindPopup("<p class=\"text-body\"><strong>"+ producteur.dataset.name + "</strong><br/>" + producteur.dataset.address + "<br/><a href=\"/shop/"+ producteur.dataset.id +"\" class=\"text-primary\">En savoir +</a></p>");
+            })
+        </script>
+    {% endblock %}

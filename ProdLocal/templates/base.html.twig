@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+              integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+              crossorigin=""/>
+    {% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <a href="/" class="text-decoration-none">
+        <div class="jumbotron bg-primary py-4 rounded-0">
+            <div class="row align-items-end m-0 w-100">
+                <div class="col-9">
+                    <a href="/" class="text-decoration-none">
+                        <div class="row">
+                            <img src="{{ asset('images/logo.png') }}">
+                            <h1 class="display-3 text-white"> Prod'Local</h1>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-3">
+                    <div class="row justify-content-end">
+                    {% if not app.user %}
+                        <a class="btn btn-secondary mx-1" href="{{ path('security_login') }}">Connexion</a>
+                        <a class="btn btn-secondary mx-1" href="{{ path('security_registration') }}">Inscription</a>
+                    {% else %}
+                        <a class="btn btn-secondary mx-1" href="{{ path('security_logout') }}">Déconnexion</a>
+                    {% endif %}
+                    <!--connexion-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>
+
+<div class="container mb-3">
+    {% block body %}{% endblock %}
+</div>
+
+<footer class="footer bg-primary py-3 mt-auto mb-0 rounded-0">
+    <p class="small my-0 text-center text-white">A propos</p>
+</footer>
+
+{% block javascripts %}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+{% endblock %}
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

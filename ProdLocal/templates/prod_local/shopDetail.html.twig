@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prod'Local{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .w-45 {
+            width:45%!important;
+        }
+        .w-90 {
+            width:95%!important;
+        }
+        .text-truncate-2 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .list-group-item.active-secondary{
+            z-index:2;
+            color:#fff;
+            background-color:#888;
+            border-color:#888}
+    </style>
+{% endblock %}
+
+{% block body %}
+    <p class="text-secondary"><a href="/" class="text-secondary">Accueil</a> &gt; <strong>{{ shop.name }}</strong></p>
+    <div class="row h-50">
+        <div class="col-5 overflow-hidden">
+            <img src="{{ asset('images/'~shop.image) }}" alt="" class="w-100 h-auto">
+            {% if app.user %}
+                <div class="list-group mx-2 my-3 w-95">
+                    <div class="list-group-item list-group-item-action flex-column align-items-start active p-0">
+                        <div class="d-flex my-1 px-2 align-item-center justify-content-center">
+                            <h5 class="my-0 text-center">Fidélité</h5>
+                        </div>
+                        <div class="list-group-item list-group-item-action flex-column align-items-start bg-light px-1">
+                            <div class="mx-0 justify-content-between">
+                                <p class="mb-0 card-text text-center text-body">Votre nombre de points de fidélité pour le magasin</p>
+                                <p class="mt-0 card-text text-center text-body"><strong>{{ shop.name }}</strong></p>
+                                {% if fidelityPoints is defined and fidelityPoints is not empty %}
+                                    <p class="card-text text-center text-primary">{{ fidelityPoints.points }} points</p>
+                                {% else %}
+                                    <p class="card-text text-center text-primary">0 point</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div><!--class col-md-5-->
+        <div class="col-7 border-left border-primary">
+            <h2 class="text-primary">{{ shop.name }}</h2>
+            <p class="my-0">⌕ {{ shop.address }}</p>
+            <div class="row m-0 p-0">
+                <p class="my-0">◴&nbsp;</p>
+                <div class="m-0 p-0">
+                    <table>
+                        <tbody>
+                            {% set nb = schedules|length - 1 %}
+                            {% for i in 0..nb %}
+                                <tr>
+                                    <td class="pr-5">{{ schedules[i]['openingdays'] }}</td>
+                                    <td>{{ schedules[i]['openinghours'] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <p class="my-0">✆ {{ shop.telephone }}</p>
+            <br/>
+            <div class="row">
+                <div class="col-md">
+                    <h3 class="text-primary">Description</h3>
+                    <p>{{ shop.description|raw }}</p>
+                </div>
+            </div>
+        </div>
+    </div> <!--class row-->
+    <br/>
+    <div class="row">
+        <div class="col-8 border-right border-primary">
+            <h3 class="text-primary">Produits</h3>
+            <div class="row flex-wrap justify-content-between">
+                {% if listAvailableProducts is defined or listAvailableProducts is not empty %}
+                    {% for product in listAvailableProducts %}
+                        <div class="list-group mx-2 my-3 w-45">
+                            <div class="list-group-item list-group-item-action flex-column align-items-start active p-0">
+                                <div class="d-flex my-1 px-2 align-item-center justify-content-between">
+                                    <h5 class="text-center">{{ product.name }}</h5>
+                                    <img src="{{ asset('images/'~product.catimage) }}" class="h-100 w-auto">
+                                </div>
+                                <div class="list-group-item list-group-item-action flex-column align-items-start bg-light px-1">
+                                    <div class="mx-0 justify-content-between">
+                                        <p class="card-text text-center text-body">{{ product.description }}</p>
+                                        <p class="card-text text-center text-primary">Quantité restante: {{ product.quantity }}</p>
+                                        <p class="card-text text-center text-primary">{{ product.price }}€ par {{ product.unity }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Oops, votre boutique n'a pas proposé de produits...</p>
+                {% endif %}
+
+                {% if listNotAvailableProducts is defined or listNotAvailableProducts is not empty %}
+                    {% for product in listNotAvailableProducts %}
+                        <div class="list-group mx-2 my-3 w-45">
+                            <div class="list-group-item list-group-item-action flex-column align-items-start active-secondary p-0">
+                                <div class="d-flex my-1 px-2 align-item-center justify-content-between">
+                                    <h5 class="text-center">{{ product.name }}</h5>
+                                    <img src="{{ asset('images/'~product.catimage) }}" class="h-100 w-auto">
+                                </div>
+                                <div class="list-group-item list-group-item-action flex-column align-items-start bg-light px-1">
+                                    <div class="mx-0 justify-content-between">
+                                        <p class="card-text text-center text-body">{{ product.description }}</p>
+                                        <p class="card-text text-center text-body">Quantité restante: {{ product.quantity }}</p>
+                                        <p class="card-text text-center text-body">{{ product.price }}€ par {{ product.unity }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Oops, votre boutique n'a pas proposé de produits...</p>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="col-4">
+            <h3 class="text-primary">Avis clients</h3>
+            <p class="text-primary">{{ avgrate|number_format(1, '.', ',') }}/5★</p>
+            <div class="col-md-auto">
+                {% if feedbacks is defined or feedbacks is not empty%}
+                    {% for feedback in feedbacks|slice(0, 3) %}
+                        <p class="text-truncate-2">{{ feedback.text }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p class="">Oups, personne n'a encore donné d'avis...</p>
+                {% endif %}
+            </div>
+            <p class="small text-primary text-right mx-0"><a href="/shop/{{ shop.id }}/feedbacks/" class="text-primary">Voir plus d'avis clients</a></p>
+        </div>
+    </div>
+{% endblock %}
